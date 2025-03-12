@@ -3,10 +3,10 @@ session_start();
 
 // Configuración de la base de datos
 $host = '127.0.0.1';
-$dbname = 'proyecto php'; // Asegúrate de que este es el nombre correcto de tu base de datos
-$username = 'Ivan';
-$password = 'alumne';
-$port = 3307;
+$dbname = 'proyecto php'; // Cambia si es necesario
+$username = 'root';
+$password = ''; // Sin contraseña
+$port = 3307; // Asegúrate de que sea el puerto correcto
 
 // Conexión a la base de datos
 try {
@@ -21,21 +21,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $input_password = $_POST['password'];
     
     // Consulta preparada para prevenir inyección SQL
-    $query = "SELECT * FROM Usuarios WHERE Username = :username";
+    $query = "SELECT * FROM Usuarios WHERE username = :username";
     $stmt = $conn->prepare($query);
-    $stmt->bindParam(':username', $input_username); // Vincular el parámetro
+    $stmt->bindParam(':username', $input_username);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        // Comparación directa de contraseñas (sin encriptación)
-        if ($input_password === $row['password']) {
-            // Inicio de sesión exitoso
-            $_SESSION['username'] = $input_username; // Guardar el nombre de usuario en la sesión
-            header("Location: html/index.html"); // Redirigir a index.html
-            exit();
+        
+        // Verifica si la columna 'password' existe en el resultado
+        if (isset($row['password'])) {
+            // Verificar la contraseña usando password_verify
+            if ($input_password === $row['password']) {
+                // Inicio de sesión exitoso
+                $_SESSION['username'] = $input_username;
+                header("Location: ../html/index.html"); // Redirigir a index.html
+                exit();
+            } else {
+                $error = "Contraseña incorrecta.";
+            }
         } else {
-            $error = "Contraseña incorrecta.";
+            $error = "La columna 'password' no existe en la base de datos.";
         }
     } else {
         $error = "Usuario no encontrado.";
@@ -68,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Contraseña:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>                    
+                        <input type="password" class="form-control" id="password" name="password">                    
                     </div>
                     <button type="submit" class="btn btn-primary">Iniciar sesión</button>
                 </form>
