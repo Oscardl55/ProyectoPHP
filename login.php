@@ -1,19 +1,44 @@
 <?php
 session_start();
 
+// Configuración de la base de datos
+$host = '127.0.0.1';
+$dbname = 'proyecto php'; // Asegúrate de que este es el nombre correcto de tu base de datos
+$username = 'Ivan';
+$password = 'alumne';
+$port = 3307;
+
+// Conexión a la base de datos
+try {
+    $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    die("Error de conexión: " . $e->getMessage());
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $input_username = $_POST['username'];
+    $input_password = $_POST['password'];
     
-    // Aquí deberías verificar las credenciales con tu base de datos
-    // Este es solo un ejemplo simple
-    if ($username === 'admin' && $password === 'password') {
-        $_SESSION['loggedin'] = true;
-        $_SESSION['username'] = $username;
-        header("Location: html/index.html");
-        exit;
+    // Consulta preparada para prevenir inyección SQL
+    $query = "SELECT * FROM Usuarios WHERE Username = :username";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':username', $input_username); // Vincular el parámetro
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Comparación directa de contraseñas (sin encriptación)
+        if ($input_password === $row['password']) {
+            // Inicio de sesión exitoso
+            $_SESSION['username'] = $input_username; // Guardar el nombre de usuario en la sesión
+            header("Location: html/index.html"); // Redirigir a index.html
+            exit();
+        } else {
+            $error = "Contraseña incorrecta.";
+        }
     } else {
-        $error = "Usuario o contraseña incorrectos";
+        $error = "Usuario no encontrado.";
     }
 }
 ?>
@@ -43,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Contraseña:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <input type="password" class="form-control" id="password" name="password" required>                    
                     </div>
                     <button type="submit" class="btn btn-primary">Iniciar sesión</button>
                 </form>
