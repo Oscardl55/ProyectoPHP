@@ -3,10 +3,10 @@ session_start();
 
 // Configuración de la base de datos
 $host = '127.0.0.1';
-$dbname = 'proyecto php'; // Cambia si es necesario
+$dbname = 'proyecto_php'; // Cambia si es necesario
 $username = 'root';
 $password = ''; // Sin contraseña
-$port = 3307; // Asegúrate de que sea el puerto correcto
+$port = 3306; // Asegúrate de que sea el puerto correcto
 
 // Conexión a la base de datos
 try {
@@ -21,27 +21,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $input_password = $_POST['password'];
     
     // Consulta preparada para prevenir inyección SQL
-    $query = "SELECT * FROM Usuarios WHERE username = :username";
+    $query = "SELECT * FROM Usuarios WHERE usuario = :usuario";
     $stmt = $conn->prepare($query);
-    $stmt->bindParam(':username', $input_username);
+    $stmt->bindParam(':usuario', $input_username);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         // Verifica si la columna 'password' existe en el resultado
-        if (isset($row['password'])) {
+        if (isset($row['contrasena'])) {
             // Verificar la contraseña usando password_verify
-            if ($input_password === $row['password']) {
+            if ($input_password === $row['contrasena']) {
                 // Inicio de sesión exitoso
-                $_SESSION['username'] = $input_username;
+                $_SESSION['usuario'] = $input_username;
                 header("Location: ../html/index.html"); // Redirigir a index.html
                 exit();
             } else {
                 $error = "Contraseña incorrecta.";
             }
         } else {
-            $error = "La columna 'password' no existe en la base de datos.";
+            $error = "La columna 'contrasena' no existe en la base de datos.";
         }
     } else {
         $error = "Usuario no encontrado.";
