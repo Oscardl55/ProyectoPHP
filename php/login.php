@@ -77,6 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="password" class="form-control" id="password" name="password">                    
                     </div>
                     <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                    <p class="mt-3">¿No tienes una cuenta? <a href="register.php">Regístrate aquí</a></p>
                 </form>
             </div>
         </div>
