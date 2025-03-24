@@ -1,17 +1,47 @@
 .card-img-top {
-    width: 100%;
-    height: 50%; /* Ajusta este valor según tus necesidades */
-  }
-  .card {
-    height: 100%;
-  }
-  .card-body {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .footer{
-    padding-top: 5%;
-    align-items: center;
-    text-align: center;
-  }
+  width: 100%;
+  height: 50%; /* Ajusta este valor según tus necesidades */
+  object-fit: contain;
+  padding: 10px;
+}
+.card {
+  height: 100%;
+  transition: transform 0.3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer{
+  padding-top: 5%;
+  align-items: center;
+  text-align: center;
+}
+
+/* Estilos para el modal */
+.modal-body img {
+  max-height: 400px;
+  width: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+#modalTitulo {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+#modalPrecio {
+  color: #d32f2f;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+#modalDescripcion {
+  margin-bottom: 20px;
+}
