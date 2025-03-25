@@ -31,11 +31,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // Verifica si la columna 'password' existe en el resultado
         if (isset($row['contrasena'])) {
-            // Verificar la contraseña usando password_verify
+            // Verificar la contraseña
             if ($input_password === $row['contrasena']) {
                 // Inicio de sesión exitoso
                 $_SESSION['usuario'] = $input_username;
-                header("Location: ../html/index.html"); // Redirigir a index.html
+                
+                // Redirigir al admin a admin.php
+                if ($input_username === 'admin') {
+                    header("Location: admin.php");
+                } else {
+                    header("Location: ../html/index.html"); // Redirigir a index.html para usuarios normales
+                }
                 exit();
             } else {
                 $error = "Contraseña incorrecta.";
