@@ -45,3 +45,92 @@
 #modalDescripcion {
   margin-bottom: 20px;
 }
+
+:root {
+  --gold: #d4af37;
+  --dark: #1a1a1a;
+}
+
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.navbar {
+  background-color: var(--dark) !important;
+  border-bottom: 3px solid var(--gold);
+}
+
+.navbar-brand, .nav-link {
+  color: white !important;
+  transition: color 0.3s;
+}
+
+.navbar-brand:hover, .nav-link:hover {
+  color: var(--gold) !important;
+}
+
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1523170335258-f5ed11844a49?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+  background-size: cover;
+  color: white;
+  padding: 100px 0;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.benefit-card {
+  border: none;
+  border-radius: 10px;
+  transition: transform 0.3s;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.benefit-card:hover {
+  transform: translateY(-10px);
+}
+
+.benefit-icon {
+  font-size: 2.5rem;
+  color: var(--gold);
+  margin-bottom: 15px;
+}
+
+.gold-text {
+  color: var(--gold);
+}
+
+.btn-gold {
+  background-color: var(--gold);
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  font-weight: bold;
+}
+
+.btn-gold:hover {
+  background-color: #c9a227;
+  color: white;
+}
+
+footer {
+  background-color: var(--dark);
+  color: white;
+  padding: 30px 0;
+  margin-top: 50px;
+  border-top: 3px solid var(--gold);
+}
+
+.contact-info i {
+  color: var(--gold);
+  margin-right: 10px;
+}
