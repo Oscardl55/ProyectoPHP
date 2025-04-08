@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+
 
 // Configuración de la base de datos
 $host = '127.0.0.1';
@@ -9,7 +14,6 @@ $username = 'root';
 $password = '';
 $port = 3306;
 
-
 try {
     $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -17,6 +21,11 @@ try {
     die("Error de conexión: " . $e->getMessage());
 }
 
+// Obtener todos los productos de la base de datos
+$query = "SELECT * FROM productos";
+$stmt = $conn->prepare($query);
+$stmt->execute();
+$productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Procesar el formulario cuando se envía
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -25,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $precio = $_POST['precio'];
     $stock = $_POST['stock'];
     $marca = $_POST['marca'];
-
 
     try {
         $query = "INSERT INTO productos (Nombre, Descripcion, Precio, Stock, Marca)
@@ -41,12 +49,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
        
         $mensaje = "Producto añadido correctamente!";
+        // Recargar la lista de productos después de añadir uno nuevo
+        header("Location: productos.php");
+        exit();
     } catch(PDOException $e) {
         $error = "Error al añadir producto: " . $e->getMessage();
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -55,20 +65,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 800px;
-            margin-top: 30px;
-        }
-        #formularioProducto {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/productos.css">
+
 </head>
 <body>
     <div class="container">
@@ -122,6 +120,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit" class="btn btn-success">Guardar Producto</button>
                 <button type="button" id="ocultarFormulario" class="btn btn-outline-secondary">Cancelar</button>
             </form>
+        </div>
+
+        <!-- Tabla de Productos -->
+        <div class="table-responsive">
+            <h3 class="mb-3">Lista de Productos</h3>
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Marca</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($productos as $producto): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($producto['ID']); ?></td>
+                            <td><?php echo htmlspecialchars($producto['Nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($producto['Descripcion']); ?></td>
+                            <td><?php echo htmlspecialchars($producto['Precio']); ?> €</td>
+                            <td><?php echo htmlspecialchars($producto['Stock']); ?></td>
+                            <td><?php echo htmlspecialchars($producto['Marca']); ?></td>
+                            <td>
+                                <a href="eliminar_producto.php?id=<?php echo $producto['ID']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
