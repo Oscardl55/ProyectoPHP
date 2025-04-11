@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+// Verificar si está logueado y si es 'admin'
+if (!isset($_SESSION['username']) || $_SESSION['username'] !== 'admin') {
+    header("Location: login.php");
+    exit;
+}
+
+
 // Configuración de la base de datos
 $host = '127.0.0.1';
 $dbname = 'proyecto_php';
@@ -14,14 +21,6 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
     echo "Error de conexión: " . $e->getMessage();
-    exit;
-}
-
-$error = '';
-
-// Verificar si el usuario está logueado
-if (!isset($_SESSION['usuario'])) {
-    header("Location: login.php");
     exit;
 }
 
@@ -70,8 +69,7 @@ if (isset($_GET['logout'])) {
 
     <div class="container mt-5">
         <h2>Panel de Administración</h2>
-        <p>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']); ?>!</p>
-        <!-- Aquí puedes agregar el contenido del panel de administración -->
+        <p>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
     </div>
 </body>
 </html>

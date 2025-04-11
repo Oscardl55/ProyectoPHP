@@ -1,9 +1,10 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['username'])) {
+// Verificar si está logueado y si es 'admin'
+if (!isset($_SESSION['username']) || $_SESSION['username'] !== 'admin') {
     header("Location: login.php");
-    exit();
+    exit;
 }
 
 
@@ -69,6 +70,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </head>
 <body>
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../html/index.html">Logo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.php">Panel de Administración</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="productos.php">Productos</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.php?logout=1">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="container">
         <h2 class="mb-4">Gestión de Productos</h2>
         
